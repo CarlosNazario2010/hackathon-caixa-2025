@@ -165,5 +165,3 @@ Realiza uma simulação de empréstimo com base no valor desejado e no prazo.
 2.  A base de dados utilizada é o H2, configurado em memória, o que significa que os dados são perdidos a cada reinício da aplicação.
 3.  O projeto utiliza o padrão de arquitetura em camadas (Controller, Service, Repository).
 4.  **Este projeto não utiliza a biblioteca Lombok**. Todos os métodos `equals()`, `hashCode()`, `toString()`, construtores e *getters/setters* foram implementados manualmente.
-
-tores e *getters/setters* foram implementados manualmente.
