@@ -49,7 +49,7 @@ Realiza uma simulação de empréstimo com base no valor desejado e no prazo.
 
     * **PRODUTO_3**
         * **Condição:** Valor entre R$ 100.000,01 e R$ 1.000.000 **OU** Prazo entre 49 e 96 meses.
-        * **Taxa de Juros:** 0.182 (18.2% ao mês)
+        * **Taxa de Juros:** 0.0182 (1.82% ao mês)
 
     * **PRODUTO_4**
         * **Condição:** Valor acima de R$ 1.000.000 **OU** Prazo maior que 96 meses.
