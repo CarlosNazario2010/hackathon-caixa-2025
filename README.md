@@ -17,8 +17,8 @@ Este projeto foi desenvolvido como parte de um **Hackathon realizado pela Caixa 
 
 2.  **Clonar o Repositório:**
     ```bash
-    git clone [URL_DO_SEU_REPOSITORIO]
-    cd [pasta_do_projeto]
+    git clone https://github.com/CarlosNazario2010/hackathon-caixa-2025
+    cd hackathon
     ```
 
 3.  **Executar a Aplicação:**
