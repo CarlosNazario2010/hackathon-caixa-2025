@@ -4,7 +4,7 @@ Este projeto é uma API REST em Spring Boot para simular empréstimos com base e
 
 O sistema determina automaticamente o produto de empréstimo e a taxa de juros com base nos valores e prazos solicitados.
 
-Este projeto foi desenvolvido como parte de um **Hackathon realizada pela Caixa em 2025**.
+Este projeto foi desenvolvido como parte de um **Hackathon realizado pela Caixa em 2025**.
 
 ---
 
