@@ -35,11 +35,23 @@ A aplicação será iniciada no endereço `http://localhost:8080`.
 
 Realiza uma simulação de empréstimo com base no valor desejado e no prazo.
 
--   **Regras de Negócio:** O produto e a taxa de juros são definidos com base nos dados de entrada.
-    * **Produto 1:** `valorDesejado` entre R$ 200 e R$ 10.000 OU `prazo` entre 0 e 24 meses.
-    * **Produto 2:** `prazo` entre 25 e 48 meses OU `valorDesejado` entre R$ 10.000,01 e R$ 100.000.
-    * **Produto 3:** `prazo` entre 49 e 96 meses OU `valorDesejado` entre R$ 100.000,01 e R$ 1.000.000.
-    * **Produto 4:** `valorDesejado` acima de R$ 1.000.000 OU `prazo` maior que 96 meses.
+-   **Regras de Negócio:** O produto e a taxa de juros são determinados com base nas regras a seguir, considerando o **valor solicitado** e o **prazo em meses**.
+
+    * **PRODUTO_1**
+        * **Condição:** Valor entre R$ 200 e R$ 10.000 **OU** Prazo entre 0 e 24 meses.
+        * **Taxa de Juros:** 0.0179 (1.79% ao mês)
+
+    * **PRODUTO_2**
+        * **Condição:** Valor entre R$ 10.000,01 e R$ 100.000 **OU** Prazo entre 25 e 48 meses.
+        * **Taxa de Juros:** 0.0175 (1.75% ao mês)
+
+    * **PRODUTO_3**
+        * **Condição:** Valor entre R$ 100.000,01 e R$ 1.000.000 **OU** Prazo entre 49 e 96 meses.
+        * **Taxa de Juros:** 0.182 (18.2% ao mês)
+
+    * **PRODUTO_4**
+        * **Condição:** Valor acima de R$ 1.000.000 **OU** Prazo maior que 96 meses.
+        * **Taxa de Juros:** 0.0151 (1.51% ao mês)
 
 -   **Parâmetros da Requisição (JSON Body):**
     ```json
