@@ -1,5 +1,5 @@
 package com.carlosnazario.hackathon.services;
-
+import com.carlosnazario.hackathon.dtos.SimulacaoResumoResponse;
 import com.carlosnazario.hackathon.models.Parcela;
 import com.carlosnazario.hackathon.models.Produto;
 import com.carlosnazario.hackathon.models.ResultadoSimulacao;
@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SimulacaoService {
@@ -36,6 +38,8 @@ public class SimulacaoService {
 
         // 3. Cria a entidade Simulacao para persistência
         Simulacao simulacao = new Simulacao();
+        simulacao.setValorDesejado(valorSolicitado); // Preenche o novo campo
+        simulacao.setPrazo(numeroParcelas); // Preenche o novo campo
         simulacao.setProduto(produto);
         simulacao.setResultados(resultados);
 
@@ -43,16 +47,28 @@ public class SimulacaoService {
         return simulacaoRepository.save(simulacao);
     }
 
-    private Produto determinarProduto(BigDecimal valor, int parcelas) {
-        if ((valor.compareTo(new BigDecimal("200")) >= 0 && valor.compareTo(new BigDecimal("10000")) <= 0) || (parcelas >= 0 && parcelas <= 24)) {
-            return Produto.PRODUTO_1;
-        } else if ((parcelas >= 25 && parcelas <= 48) || (valor.compareTo(new BigDecimal("10000.01")) >= 0 && valor.compareTo(new BigDecimal("100000")) <= 0)) {
-            return Produto.PRODUTO_2;
-        } else if ((parcelas >= 49 && parcelas <= 96) || (valor.compareTo(new BigDecimal("100000.01")) >= 0 && valor.compareTo(new BigDecimal("1000000")) <= 0)) {
-            return Produto.PRODUTO_3;
-        } else if (valor.compareTo(new BigDecimal("1000000")) > 0 || parcelas > 96) {
+    private Produto determinarProduto(BigDecimal valor, int prazo) {
+
+        // Regra para PRODUTO_4: Valor acima de R$ 1.000.000 OU Prazo maior que 96 meses
+        if (valor.compareTo(new BigDecimal("1000000")) > 0 || prazo > 96) {
             return Produto.PRODUTO_4;
         }
+
+        // Regra para PRODUTO_3: Valor entre R$ 100.000,01 e R$ 1.000.000 OU Prazo entre 49 e 96 meses
+        else if ((valor.compareTo(new BigDecimal("100000.01")) >= 0 && valor.compareTo(new BigDecimal("1000000")) <= 0) || (prazo >= 49 && prazo <= 96)) {
+            return Produto.PRODUTO_3;
+        }
+
+        // Regra para PRODUTO_2: Valor entre R$ 10.000,01 e R$ 100.000 OU Prazo entre 25 e 48 meses
+        else if ((valor.compareTo(new BigDecimal("10000.01")) >= 0 && valor.compareTo(new BigDecimal("100000")) <= 0) || (prazo >= 25 && prazo <= 48)) {
+            return Produto.PRODUTO_2;
+        }
+
+        // Regra para PRODUTO_1: Valor entre R$ 200 e R$ 10.000 OU Prazo entre 0 e 24 meses
+        else if ((valor.compareTo(new BigDecimal("200")) >= 0 && valor.compareTo(new BigDecimal("10000")) <= 0) || (prazo >= 0 && prazo <= 24)) {
+            return Produto.PRODUTO_1;
+        }
+
         // Retorna um valor padrão ou lança uma exceção se nenhuma regra se aplicar
         return Produto.PRODUTO_1;
     }
@@ -98,4 +114,50 @@ public class SimulacaoService {
 
         return new ResultadoSimulacao(Tipo.PRICE, parcelas);
     }
+
+
+    //##############################################################################################################
+
+    public Optional<Simulacao> buscarSimulacaoPorId(Long id) {
+        return simulacaoRepository.findById(id);
+    }
+
+    //Retorna todas as simulações em formato de resumo
+    public List<SimulacaoResumoResponse> listarResumoDeSimulacoes() {
+        List<Simulacao> simulacoes = simulacaoRepository.findAll();
+
+        return simulacoes.stream()
+                .map(this::converterParaSimulacaoResumoResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Método auxiliar para converter Simulacao em SimulacaoResumoResponse
+    private SimulacaoResumoResponse converterParaSimulacaoResumoResponse(Simulacao simulacao) {
+        BigDecimal valorTotalSAC = BigDecimal.ZERO;
+        BigDecimal valorTotalPRICE = BigDecimal.ZERO;
+
+        for (ResultadoSimulacao resultado : simulacao.getResultados()) {
+            if (resultado.getTipo() == Tipo.SAC) {
+                valorTotalSAC = resultado.getParcelas().stream()
+                        .map(Parcela::getValorPrestacao)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+            } else if (resultado.getTipo() == Tipo.PRICE) {
+                valorTotalPRICE = resultado.getParcelas().stream()
+                        .map(Parcela::getValorPrestacao)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+            }
+        }
+
+        return new SimulacaoResumoResponse(
+                simulacao.getIdSimulacao(),
+                simulacao.getProduto().getCodigo(),
+                simulacao.getProduto().getDescricao(),
+                simulacao.getProduto().getTaxaJuros(),
+                simulacao.getValorDesejado(),
+                simulacao.getPrazo(),
+                valorTotalSAC,
+                valorTotalPRICE
+        );
+    }
+
 }
