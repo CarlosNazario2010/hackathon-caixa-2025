@@ -2,6 +2,7 @@ package com.carlosnazario.hackathon.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,6 +12,9 @@ public class Simulacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idSimulacao;
+
+    private BigDecimal valorDesejado; // NOVO CAMPO
+    private Integer prazo; // NOVO CAMPO
 
     @Enumerated(EnumType.STRING)
     private Produto produto;
@@ -46,6 +50,13 @@ public class Simulacao {
     public void setProduto(Produto produto) {
         this.produto = produto;
     }
+
+    public BigDecimal getValorDesejado() { return valorDesejado; }
+
+    public void setValorDesejado(BigDecimal valorDesejado) { this.valorDesejado = valorDesejado; }
+    public Integer getPrazo() { return prazo; }
+
+    public void setPrazo(Integer prazo) { this.prazo = prazo; }
 
     public List<ResultadoSimulacao> getResultados() {
         return resultados;

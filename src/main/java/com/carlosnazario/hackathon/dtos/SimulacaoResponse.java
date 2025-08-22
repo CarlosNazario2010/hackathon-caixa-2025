@@ -1,6 +1,8 @@
 package com.carlosnazario.hackathon.dtos;
 
 import com.carlosnazario.hackathon.models.Produto;
+import com.carlosnazario.hackathon.models.Simulacao;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -10,61 +12,40 @@ public class SimulacaoResponse {
     private int codigoProduto;
     private String descricaoProduto;
     private BigDecimal taxaJuros;
+    private BigDecimal valorDesejado;
+    private Integer prazo;
     private List<ResultadoSimulacaoResponse> resultadoSimulacao;
 
-    // Construtor sem argumentos
-    public SimulacaoResponse() {
-    }
+    // Construtor sem argumentos (ainda útil para frameworks como o Jackson)
+    public SimulacaoResponse() {}
 
-    // Construtor com todos os argumentos
-    public SimulacaoResponse(Long idSimulacao, Produto produto, List<ResultadoSimulacaoResponse> resultadoSimulacao) {
+    // Construtor CORRIGIDO com todos os argumentos
+    public SimulacaoResponse(Long idSimulacao, Produto produto, BigDecimal valorDesejado, Integer prazo, List<ResultadoSimulacaoResponse> resultadoSimulacao) {
         this.idSimulacao = idSimulacao;
         this.codigoProduto = produto.getCodigo();
         this.descricaoProduto = produto.getDescricao();
         this.taxaJuros = produto.getTaxaJuros();
+        this.valorDesejado = valorDesejado;
+        this.prazo = prazo;
         this.resultadoSimulacao = resultadoSimulacao;
     }
 
-    // Getters e Setters
-    public Long getIdSimulacao() {
-        return idSimulacao;
-    }
 
-    public void setIdSimulacao(Long idSimulacao) {
-        this.idSimulacao = idSimulacao;
-    }
-
-    public int getCodigoProduto() {
-        return codigoProduto;
-    }
-
-    public void setCodigoProduto(int codigoProduto) {
-        this.codigoProduto = codigoProduto;
-    }
-
-    public String getDescricaoProduto() {
-        return descricaoProduto;
-    }
-
-    public void setDescricaoProduto(String descricaoProduto) {
-        this.descricaoProduto = descricaoProduto;
-    }
-
-    public BigDecimal getTaxaJuros() {
-        return taxaJuros;
-    }
-
-    public void setTaxaJuros(BigDecimal taxaJuros) {
-        this.taxaJuros = taxaJuros;
-    }
-
-    public List<ResultadoSimulacaoResponse> getResultadoSimulacao() {
-        return resultadoSimulacao;
-    }
-
-    public void setResultadoSimulacao(List<ResultadoSimulacaoResponse> resultadoSimulacao) {
-        this.resultadoSimulacao = resultadoSimulacao;
-    }
+    // Getters e Setters (com os novos atributos)
+    public Long getIdSimulacao() { return idSimulacao; }
+    public void setIdSimulacao(Long idSimulacao) { this.idSimulacao = idSimulacao; }
+    public int getCodigoProduto() { return codigoProduto; }
+    public void setCodigoProduto(int codigoProduto) { this.codigoProduto = codigoProduto; }
+    public String getDescricaoProduto() { return descricaoProduto; }
+    public void setDescricaoProduto(String descricaoProduto) { this.descricaoProduto = descricaoProduto; }
+    public BigDecimal getTaxaJuros() { return taxaJuros; }
+    public void setTaxaJuros(BigDecimal taxaJuros) { this.taxaJuros = taxaJuros; }
+    public BigDecimal getValorDesejado() { return valorDesejado; }
+    public void setValorDesejado(BigDecimal valorDesejado) { this.valorDesejado = valorDesejado; }
+    public Integer getPrazo() { return prazo; }
+    public void setPrazo(Integer prazo) { this.prazo = prazo; }
+    public List<ResultadoSimulacaoResponse> getResultadoSimulacao() { return resultadoSimulacao; }
+    public void setResultadoSimulacao(List<ResultadoSimulacaoResponse> resultadoSimulacao) { this.resultadoSimulacao = resultadoSimulacao; }
 
     // Métodos equals e hashCode
     @Override
@@ -72,13 +53,10 @@ public class SimulacaoResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SimulacaoResponse that = (SimulacaoResponse) o;
-        return codigoProduto == that.codigoProduto && Objects.equals(idSimulacao, that.idSimulacao) && Objects.equals(descricaoProduto, that.descricaoProduto) && Objects.equals(taxaJuros, that.taxaJuros) && Objects.equals(resultadoSimulacao, that.resultadoSimulacao);
+        return codigoProduto == that.codigoProduto && Objects.equals(idSimulacao, that.idSimulacao) && Objects.equals(descricaoProduto, that.descricaoProduto) && Objects.equals(taxaJuros, that.taxaJuros) && Objects.equals(valorDesejado, that.valorDesejado) && Objects.equals(prazo, that.prazo) && Objects.equals(resultadoSimulacao, that.resultadoSimulacao);
     }
-
     @Override
-    public int hashCode() {
-        return Objects.hash(idSimulacao, codigoProduto, descricaoProduto, taxaJuros, resultadoSimulacao);
-    }
+    public int hashCode() { return Objects.hash(idSimulacao, codigoProduto, descricaoProduto, taxaJuros, valorDesejado, prazo, resultadoSimulacao); }
 
     // Método toString
     @Override
@@ -88,6 +66,8 @@ public class SimulacaoResponse {
                 ", codigoProduto=" + codigoProduto +
                 ", descricaoProduto='" + descricaoProduto + '\'' +
                 ", taxaJuros=" + taxaJuros +
+                ", valorDesejado=" + valorDesejado +
+                ", prazo=" + prazo +
                 ", resultadoSimulacao=" + resultadoSimulacao +
                 '}';
     }
