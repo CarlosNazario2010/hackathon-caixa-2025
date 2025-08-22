@@ -1,8 +1,10 @@
 package com.carlosnazario.hackathon.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,8 +15,11 @@ public class Simulacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idSimulacao;
 
-    private BigDecimal valorDesejado; // NOVO CAMPO
-    private Integer prazo; // NOVO CAMPO
+    private BigDecimal valorDesejado;
+    private Integer prazo;
+
+    @CreationTimestamp
+    private LocalDateTime dataSimulacao;
 
     @Enumerated(EnumType.STRING)
     private Produto produto;
@@ -28,8 +33,11 @@ public class Simulacao {
     }
 
     // Construtor com todos os argumentos
-    public Simulacao(Long idSimulacao, Produto produto, List<ResultadoSimulacao> resultados) {
+    public Simulacao(Long idSimulacao, BigDecimal valorDesejado, Integer prazo, LocalDateTime dataSimulacao, Produto produto, List<ResultadoSimulacao> resultados) {
         this.idSimulacao = idSimulacao;
+        this.valorDesejado = valorDesejado;
+        this.prazo = prazo;
+        this.dataSimulacao = dataSimulacao;
         this.produto = produto;
         this.resultados = resultados;
     }
@@ -57,6 +65,9 @@ public class Simulacao {
     public Integer getPrazo() { return prazo; }
 
     public void setPrazo(Integer prazo) { this.prazo = prazo; }
+
+    public LocalDateTime getDataSimulacao() { return dataSimulacao; } // NOVO GETTER
+    public void setDataSimulacao(LocalDateTime dataSimulacao) { this.dataSimulacao = dataSimulacao; } // NOVO SETTER
 
     public List<ResultadoSimulacao> getResultados() {
         return resultados;

@@ -4,6 +4,7 @@ import com.carlosnazario.hackathon.models.Produto;
 import com.carlosnazario.hackathon.models.Simulacao;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,19 +15,21 @@ public class SimulacaoResponse {
     private BigDecimal taxaJuros;
     private BigDecimal valorDesejado;
     private Integer prazo;
+    private LocalDateTime dataSimulacao;
     private List<ResultadoSimulacaoResponse> resultadoSimulacao;
 
     // Construtor sem argumentos (ainda útil para frameworks como o Jackson)
     public SimulacaoResponse() {}
 
     // Construtor CORRIGIDO com todos os argumentos
-    public SimulacaoResponse(Long idSimulacao, Produto produto, BigDecimal valorDesejado, Integer prazo, List<ResultadoSimulacaoResponse> resultadoSimulacao) {
+    public SimulacaoResponse(Long idSimulacao, Produto produto, BigDecimal valorDesejado, Integer prazo, LocalDateTime dataSimulacao, List<ResultadoSimulacaoResponse> resultadoSimulacao) {
         this.idSimulacao = idSimulacao;
         this.codigoProduto = produto.getCodigo();
         this.descricaoProduto = produto.getDescricao();
         this.taxaJuros = produto.getTaxaJuros();
         this.valorDesejado = valorDesejado;
         this.prazo = prazo;
+        this.dataSimulacao = dataSimulacao;
         this.resultadoSimulacao = resultadoSimulacao;
     }
 

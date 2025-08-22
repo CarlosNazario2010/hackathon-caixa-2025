@@ -1,4 +1,6 @@
 package com.carlosnazario.hackathon.services;
+import com.carlosnazario.hackathon.dtos.ProdutoAgregadoResponse;
+import com.carlosnazario.hackathon.dtos.SimulacaoPorDataResponse;
 import com.carlosnazario.hackathon.dtos.SimulacaoResumoResponse;
 import com.carlosnazario.hackathon.models.Parcela;
 import com.carlosnazario.hackathon.models.Produto;
@@ -11,8 +13,12 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -122,6 +128,10 @@ public class SimulacaoService {
         return simulacaoRepository.findById(id);
     }
 
+
+    //##############################################################################################################
+
+
     //Retorna todas as simulações em formato de resumo
     public List<SimulacaoResumoResponse> listarResumoDeSimulacoes() {
         List<Simulacao> simulacoes = simulacaoRepository.findAll();
@@ -155,9 +165,108 @@ public class SimulacaoService {
                 simulacao.getProduto().getTaxaJuros(),
                 simulacao.getValorDesejado(),
                 simulacao.getPrazo(),
+                simulacao.getDataSimulacao(),
                 valorTotalSAC,
                 valorTotalPRICE
         );
+    }
+
+
+    //##########################################################################################
+
+
+    public SimulacaoPorDataResponse listarSimulacoesPorDataAgregadas(LocalDate data) {
+        LocalDateTime dataInicio = data.atStartOfDay();
+        LocalDateTime dataFim = data.atTime(LocalTime.MAX);
+
+        List<Simulacao> simulacoes = simulacaoRepository.findByDataSimulacaoBetween(dataInicio, dataFim);
+
+        if (simulacoes.isEmpty()) {
+            return new SimulacaoPorDataResponse(List.of(), List.of());
+        }
+
+        // 1. Cria uma única lista de SimulacaoWrapper com todos os resultados (SAC e PRICE)
+        List<SimulacaoWrapper> simulacoesWrapper = simulacoes.stream()
+                .flatMap(simulacao -> simulacao.getResultados().stream()
+                        .map(resultado -> new SimulacaoWrapper(simulacao, resultado.getTipo())))
+                .collect(Collectors.toList());
+
+        // 2. Agrupa por tipo (SAC/PRICE) a partir da lista de wrappers
+        Map<Tipo, List<SimulacaoWrapper>> simulacoesPorTipo = simulacoesWrapper.stream()
+                .collect(Collectors.groupingBy(SimulacaoWrapper::getTipo));
+
+        // 3. Processa cada grupo (SAC e PRICE) separadamente
+        List<ProdutoAgregadoResponse> listaSac = processarAgregacoes(simulacoesPorTipo.getOrDefault(Tipo.SAC, List.of()));
+        List<ProdutoAgregadoResponse> listaPrice = processarAgregacoes(simulacoesPorTipo.getOrDefault(Tipo.PRICE, List.of()));
+
+        return new SimulacaoPorDataResponse(listaSac, listaPrice);
+    }
+
+    // O método processarAgregacoes permanece o mesmo
+    // NOVO MÉTODO AUXILIAR: Processa as agregações para um tipo (SAC ou PRICE)
+    private List<ProdutoAgregadoResponse> processarAgregacoes(List<SimulacaoWrapper> simulacoesWrapper) {
+        // Agrupa por produto
+        Map<Produto, List<SimulacaoWrapper>> simulacoesPorProduto = simulacoesWrapper.stream()
+                .collect(Collectors.groupingBy(wrapper -> wrapper.getSimulacao().getProduto()));
+
+        // Mapeia para os DTOs de resposta agregados
+        return simulacoesPorProduto.entrySet().stream()
+                .map(entry -> {
+                    Produto produto = entry.getKey();
+                    List<SimulacaoWrapper> wrappers = entry.getValue();
+
+                    // Calcula os valores agregados
+                    double taxaMediaJuros = produto.getTaxaJuros().doubleValue();
+
+                    // 1. Calcula a soma total de todas as prestações
+                    BigDecimal valorTotalPrestacoes = wrappers.stream()
+                            .map(w -> w.getSimulacao().getResultados().stream()
+                                    .filter(r -> r.getTipo() == w.getTipo())
+                                    .flatMap(r -> r.getParcelas().stream())
+                                    .map(Parcela::getValorPrestacao)
+                                    .reduce(BigDecimal.ZERO, BigDecimal::add))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    // 2. Calcula a soma total de todos os valores solicitados
+                    BigDecimal valorTotalSolicitado = wrappers.stream()
+                            .map(w -> w.getSimulacao().getValorDesejado())
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    // 3. NOVO: Calcula o número total de parcelas somando o prazo de cada simulação
+                    long totalDeParcelas = wrappers.stream()
+                            .mapToLong(w -> w.getSimulacao().getPrazo())
+                            .sum();
+
+                    // 4. Calcula o valor médio da prestação com base no número total de parcelas
+                    BigDecimal valorMedioPrestacao = BigDecimal.ZERO;
+                    if (totalDeParcelas > 0) { // Evita divisão por zero
+                        valorMedioPrestacao = valorTotalPrestacoes.divide(new BigDecimal(totalDeParcelas), 2, RoundingMode.HALF_UP);
+                    }
+
+                    return new ProdutoAgregadoResponse(
+                            produto.getCodigo(),
+                            produto.getDescricao(),
+                            BigDecimal.valueOf(taxaMediaJuros),
+                            valorMedioPrestacao,
+                            valorTotalSolicitado,
+                            valorTotalPrestacoes
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    // NOVO: Classe auxiliar para agrupar simulação e tipo de resultado
+    private static class SimulacaoWrapper {
+        private final Simulacao simulacao;
+        private final Tipo tipo;
+
+        public SimulacaoWrapper(Simulacao simulacao, Tipo tipo) {
+            this.simulacao = simulacao;
+            this.tipo = tipo;
+        }
+
+        public Simulacao getSimulacao() { return simulacao; }
+        public Tipo getTipo() { return tipo; }
     }
 
 }

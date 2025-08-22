@@ -8,10 +8,12 @@ import com.carlosnazario.hackathon.models.ResultadoSimulacao;
 import com.carlosnazario.hackathon.models.Parcela;
 import com.carlosnazario.hackathon.services.SimulacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,6 +59,14 @@ public class SimulacaoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/agregada")
+    public ResponseEntity<SimulacaoPorDataResponse> listarSimulacoesAgregadasPorData(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data
+    ) {
+        SimulacaoPorDataResponse response = simulacaoService.listarSimulacoesPorDataAgregadas(data);
+        return ResponseEntity.ok(response);
+    }
+
 
     //################################################################################
 
@@ -74,6 +84,7 @@ public class SimulacaoController {
                 simulacao.getProduto(),
                 simulacao.getValorDesejado(),
                 simulacao.getPrazo(),
+                simulacao.getDataSimulacao(),
                 resultadosResponse
         );
     }

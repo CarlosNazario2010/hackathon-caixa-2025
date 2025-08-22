@@ -1,11 +1,13 @@
 package com.carlosnazario.hackathon.dtos;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SimulacaoResumoResponse {
 
     private Long idSimulacao;
+    private LocalDateTime dataSimulacao;
     private int codigoProduto;
     private String descricaoProduto;
     private BigDecimal taxaJuros;
@@ -19,13 +21,14 @@ public class SimulacaoResumoResponse {
     }
 
     // Construtor com todos os argumentos
-    public SimulacaoResumoResponse(Long idSimulacao, int codigoProduto, String descricaoProduto, BigDecimal taxaJuros, BigDecimal valorDesejado, Integer prazo, BigDecimal valorTotalParcelasSAC, BigDecimal valorTotalParcelasPRICE) {
+    public SimulacaoResumoResponse(Long idSimulacao, int codigoProduto, String descricaoProduto, BigDecimal taxaJuros, BigDecimal valorDesejado, Integer prazo, LocalDateTime dataSimulacao, BigDecimal valorTotalParcelasSAC, BigDecimal valorTotalParcelasPRICE) {
         this.idSimulacao = idSimulacao;
         this.codigoProduto = codigoProduto;
         this.descricaoProduto = descricaoProduto;
         this.taxaJuros = taxaJuros;
         this.valorDesejado = valorDesejado;
         this.prazo = prazo;
+        this.dataSimulacao = dataSimulacao;
         this.valorTotalParcelasSAC = valorTotalParcelasSAC;
         this.valorTotalParcelasPRICE = valorTotalParcelasPRICE;
     }
