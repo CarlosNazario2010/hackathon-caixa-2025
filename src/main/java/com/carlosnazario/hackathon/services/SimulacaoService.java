@@ -1,5 +1,6 @@
 package com.carlosnazario.hackathon.services;
 
+import com.carlosnazario.hackathon.dtos.EndpointMetricsResponse;
 import com.carlosnazario.hackathon.dtos.ProdutoAgregadoResponse;
 import com.carlosnazario.hackathon.dtos.SimulacaoPorDataResponse;
 import com.carlosnazario.hackathon.dtos.SimulacaoResumoResponse;
@@ -9,6 +10,8 @@ import com.carlosnazario.hackathon.models.ResultadoSimulacao;
 import com.carlosnazario.hackathon.models.Simulacao;
 import com.carlosnazario.hackathon.models.Tipo;
 import com.carlosnazario.hackathon.repositories.SimulacaoRepository;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +20,21 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class SimulacaoService {
 
     private final SimulacaoRepository simulacaoRepository;
+    private final MeterRegistry meterRegistry;
 
     @Autowired
-    public SimulacaoService(SimulacaoRepository simulacaoRepository) {
+    public SimulacaoService(SimulacaoRepository simulacaoRepository, MeterRegistry meterRegistry) {
         this.simulacaoRepository = simulacaoRepository;
+        this.meterRegistry = meterRegistry;
     }
-
     public Simulacao realizarSimulacao(BigDecimal valorSolicitado, int numeroParcelas) {
 
         // 1. Determina o produto com base nas regras de negócio
@@ -269,6 +271,63 @@ public class SimulacaoService {
 
         public Simulacao getSimulacao() { return simulacao; }
         public Tipo getTipo() { return tipo; }
+    }
+
+
+    //##########################################################################################
+
+
+    // Realiza o monitoramento dos Endpoints
+    public EndpointMetricsResponse getEndpointMetrics(String endpoint) {
+        final String metricName = "http.server.requests";
+
+        // Encontre todos os Timers para a métrica de requisições HTTP
+        Collection<Timer> allTimers = meterRegistry.find(metricName).timers();
+
+        // Filtre e colete os Timers que correspondem ao endpoint EXATO
+        Collection<Timer> endpointTimers = allTimers.stream()
+                .filter(t -> t.getId().getTag("uri") != null && t.getId().getTag("uri").equals(endpoint))
+                .collect(Collectors.toList());
+
+        // Obtenha os Timers de sucesso (código 200)
+        Collection<Timer> successTimers = endpointTimers.stream()
+                .filter(t -> "200".equals(t.getId().getTag("status")))
+                .collect(Collectors.toList());
+
+        // Obtenha os Timers para erros do cliente (4xx) e do servidor (5xx)
+        Collection<Timer> errorTimers = endpointTimers.stream()
+                .filter(t -> {
+                    String status = t.getId().getTag("status");
+                    return status != null && (status.startsWith("4") || status.startsWith("5"));
+                })
+                .collect(Collectors.toList());
+
+        // Calcula as contagens e tempos totais
+        long totalRequests = endpointTimers.stream().mapToLong(Timer::count).sum();
+        long successRequests = successTimers.stream().mapToLong(Timer::count).sum();
+
+        double totalTimeNanos = endpointTimers.stream().mapToDouble(t -> t.totalTime(TimeUnit.NANOSECONDS)).sum();
+        double maxTimeNanos = endpointTimers.stream().mapToDouble(t -> t.max(TimeUnit.NANOSECONDS)).max().orElse(0.0);
+
+        // Crie o objeto de resposta e preencha os dados
+        EndpointMetricsResponse response = new EndpointMetricsResponse();
+        response.setDataAcesso(LocalDateTime.now());
+        response.setEndpointAcessado(endpoint);
+        response.setQuantidadeRequisicoes(totalRequests);
+
+        if (totalRequests > 0) {
+            response.setTempoMedioMs(totalTimeNanos / totalRequests / 1_000_000.0);
+            response.setTempoMinimoMs(0.0);
+            response.setTempoMaximoMs(maxTimeNanos / 1_000_000.0);
+            response.setPercentualSucesso((double) successRequests / totalRequests * 100);
+        } else {
+            response.setTempoMedioMs(0.0);
+            response.setTempoMinimoMs(0.0);
+            response.setTempoMaximoMs(0.0);
+            response.setPercentualSucesso(0.0);
+        }
+
+        return response;
     }
 
 }

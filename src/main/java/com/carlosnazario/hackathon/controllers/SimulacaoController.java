@@ -103,4 +103,17 @@ public class SimulacaoController {
                 parcela.getValorPrestacao()
         );
     }
+
+
+    //###################################################################################
+
+
+    // Monitoramento da API
+    @GetMapping("/metrics/endpoint")
+    public ResponseEntity<EndpointMetricsResponse> getMetrics(
+            @RequestParam(name = "uri") String uri
+    ) {
+        EndpointMetricsResponse metrics = simulacaoService.getEndpointMetrics(uri);
+        return ResponseEntity.ok(metrics);
+    }
 }

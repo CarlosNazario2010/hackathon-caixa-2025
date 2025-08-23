@@ -460,6 +460,47 @@ Retorna um resumo agregado das simulações de um dia específico, com dados agr
     }
     ```
 
+---
+### 🛠️ Endpoints da API
+
+#### `GET /api/simulacao/metrics/endpoint?uri={uri}`
+
+Retorna métricas de desempenho agregadas para um endpoint específico, incluindo tempo de resposta e taxa de sucesso.
+
+-   **Parâmetros da Requisição (`Query Parameter`):**
+    * `uri` (string): A URI exata do endpoint que se deseja monitorar (por exemplo: `/api/simulacao` ou `/api/simulacao/{id}`).
+
+-   **Exemplo de Chamada:**
+    `http://localhost:8080/api/simulacao/metrics/endpoint?uri=/api/simulacao`
+
+-   **Resposta de Sucesso (200 OK):**
+    Retorna um objeto `JSON` com as métricas de desempenho calculadas para o endpoint especificado.
+
+    ```json
+    {
+        "dataAcesso": "2025-08-23T10:49:58.8661871",
+        "endpointAcessado": "/api/simulacao",
+        "quantidadeRequisicoes": 10,
+        "tempoMedioMs": 42.17345,
+        "tempoMinimoMs": 0,
+        "tempoMaximoMs": 329.4762,
+        "percentualSucesso": 90
+    }
+    ```
+
+-   **Resposta de Erro (404 Not Found):**
+    Ocorre se as métricas para a `uri` especificada não forem encontradas, o que pode indicar que o endpoint não existe ou ainda não foi acessado.
+
+    ```json
+    {
+        "timestamp": "2025-08-23T10:55:00.000+00:00",
+        "status": 404,
+        "error": "Not Found",
+        "message": "Metrics not found for uri: /api/simulacao/invalido",
+        "path": "/api/simulacao/metrics/endpoint"
+    }
+    ```
+
 ### 📋 Informações Adicionais
 
 1.  O projeto foi criado em Spring Boot 3.3.2.
