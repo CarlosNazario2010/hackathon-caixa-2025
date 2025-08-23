@@ -29,12 +29,15 @@ public class SimulacaoService {
 
     private final SimulacaoRepository simulacaoRepository;
     private final MeterRegistry meterRegistry;
+    private final Optional<EventHubsService> eventHubsService;
 
     @Autowired
-    public SimulacaoService(SimulacaoRepository simulacaoRepository, MeterRegistry meterRegistry) {
+    public SimulacaoService(SimulacaoRepository simulacaoRepository, MeterRegistry meterRegistry, Optional<EventHubsService> eventHubsService) {
         this.simulacaoRepository = simulacaoRepository;
         this.meterRegistry = meterRegistry;
+        this.eventHubsService = eventHubsService;
     }
+
     public Simulacao realizarSimulacao(BigDecimal valorSolicitado, int numeroParcelas) {
 
         // 1. Determina o produto com base nas regras de negócio
@@ -53,8 +56,13 @@ public class SimulacaoService {
         simulacao.setProduto(produto);
         simulacao.setResultados(resultados);
 
-        // 4. Salva a simulação no banco de dados e a retorna
-        return simulacaoRepository.save(simulacao);
+        // 4. Registra a simulacao no banco de dados
+        Simulacao savedSimulacao = simulacaoRepository.save(simulacao);
+
+        // 5. Envia a simulacao para o EventHub se o serviço está disponível
+        eventHubsService.ifPresent(service -> service.sendSimulationEvent(savedSimulacao));
+
+        return savedSimulacao;
     }
 
     private Produto determinarProduto(BigDecimal valor, int prazo) {

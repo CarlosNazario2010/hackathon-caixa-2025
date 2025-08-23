@@ -146,7 +146,34 @@ Realiza uma simulação de empréstimo com base no valor desejado e no prazo.
       ]
     }
     ```
+---
+### ☁️ Integração com Azure Event Hubs
 
+A API foi configurada para disparar eventos para o Azure Event Hubs a cada nova simulação criada (`POST /api/simulacao`). Essa integração permite o processamento assíncrono e a análise de dados em tempo real das simulações.
+
+#### Configuração
+
+A funcionalidade de envio de eventos é controlada através do arquivo `src/main/resources/application.properties`.
+
+-   **Para desabilitar o envio de eventos:**
+    Mantenha a propriedade `eventhubs.enabled` com o valor `false` ou simplesmente a remova.
+
+    ```properties
+    # Desabilita o envio de eventos para o Event Hubs
+    eventhubs.enabled=false
+    ```
+
+-   **Para habilitar o envio de eventos:**
+    Defina a propriedade `eventhubs.enabled` como `true` e preencha as credenciais do seu Event Hubs.
+
+    ```properties
+    # Habilita o envio de eventos para o Event Hubs
+    eventhubs.enabled=true
+
+    # Preencha com os dados da sua instância do Azure Event Hubs
+    spring.cloud.azure.eventhubs.connection-string=SUA_STRING_DE_CONEXAO
+    spring.cloud.azure.eventhubs.eventhub-name=SEU_EVENTHUB_NAME
+    ```
 
 
 ---
