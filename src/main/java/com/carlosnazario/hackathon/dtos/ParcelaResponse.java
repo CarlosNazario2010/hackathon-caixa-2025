@@ -1,5 +1,3 @@
-// src/main/java/com/carlosnazario/hackathon/dtos/ParcelaResponse.java
-
 package com.carlosnazario.hackathon.dtos;
 
 import java.math.BigDecimal;
@@ -11,7 +9,9 @@ public class ParcelaResponse {
     private BigDecimal valorJuros;
     private BigDecimal valorPrestacao;
 
-    // Construtor com todos os argumentos
+    public ParcelaResponse() {
+    }
+
     public ParcelaResponse(int numero, BigDecimal valorAmortizacao, BigDecimal valorJuros, BigDecimal valorPrestacao) {
         this.numero = numero;
         this.valorAmortizacao = valorAmortizacao;
@@ -19,7 +19,6 @@ public class ParcelaResponse {
         this.valorPrestacao = valorPrestacao;
     }
 
-    // Getters
     public int getNumero() {
         return numero;
     }
@@ -36,7 +35,6 @@ public class ParcelaResponse {
         return valorPrestacao;
     }
 
-    // Métodos equals e hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,8 +50,6 @@ public class ParcelaResponse {
     public int hashCode() {
         return Objects.hash(numero, valorAmortizacao, valorJuros, valorPrestacao);
     }
-
-    // Método toString
     @Override
     public String toString() {
         return "ParcelaResponse{" +

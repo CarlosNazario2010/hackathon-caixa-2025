@@ -2,7 +2,6 @@ package com.carlosnazario.hackathon.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Objects;
 
 @Entity
 public class Simulacao {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idSimulacao;
@@ -28,11 +26,9 @@ public class Simulacao {
     @CollectionTable(name = "simulacao_resultados", joinColumns = @JoinColumn(name = "simulacao_id"))
     private List<ResultadoSimulacao> resultados;
 
-    // Construtor sem argumentos
     public Simulacao() {
     }
 
-    // Construtor com todos os argumentos
     public Simulacao(Long idSimulacao, BigDecimal valorDesejado, Integer prazo, LocalDateTime dataSimulacao, Produto produto, List<ResultadoSimulacao> resultados) {
         this.idSimulacao = idSimulacao;
         this.valorDesejado = valorDesejado;
@@ -42,7 +38,6 @@ public class Simulacao {
         this.resultados = resultados;
     }
 
-    // Getters e Setters
     public Long getIdSimulacao() {
         return idSimulacao;
     }
@@ -77,7 +72,6 @@ public class Simulacao {
         this.resultados = resultados;
     }
 
-    // Métodos equals e hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,7 +85,6 @@ public class Simulacao {
         return Objects.hash(idSimulacao, produto, resultados);
     }
 
-    // Método toString
     @Override
     public String toString() {
         return "Simulacao{" +

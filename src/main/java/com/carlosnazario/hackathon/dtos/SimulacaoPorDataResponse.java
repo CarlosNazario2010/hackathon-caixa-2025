@@ -3,11 +3,12 @@ package com.carlosnazario.hackathon.dtos;
 import java.util.List;
 
 public class SimulacaoPorDataResponse {
-
     private List<ProdutoAgregadoResponse> listaSac;
     private List<ProdutoAgregadoResponse> listaPrice;
 
-    // Construtor, Getters e Setters
+    public SimulacaoPorDataResponse() {
+    }
+
     public SimulacaoPorDataResponse(List<ProdutoAgregadoResponse> listaSac, List<ProdutoAgregadoResponse> listaPrice) {
         this.listaSac = listaSac;
         this.listaPrice = listaPrice;

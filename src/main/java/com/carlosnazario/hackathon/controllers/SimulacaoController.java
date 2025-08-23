@@ -1,5 +1,3 @@
-// src/main/java/com/carlosnazario/hackathon/controllers/SimulacaoController.java
-
 package com.carlosnazario.hackathon.controllers;
 
 import com.carlosnazario.hackathon.dtos.*;
@@ -33,13 +31,10 @@ public class SimulacaoController {
     public ResponseEntity<SimulacaoResponse> realizarSimulacao(
             @RequestBody @Valid SimulacaoRequest request
     ) {
-        // Chama o serviço com os dados da requisição
         Simulacao simulacao = simulacaoService.realizarSimulacao(
                 request.valorDesejado(),
                 request.prazo()
         );
-
-        // Converte o objeto de domínio (Simulacao) para o DTO de resposta
         SimulacaoResponse response = toSimulacaoResponse(simulacao);
 
         return ResponseEntity.ok(response);

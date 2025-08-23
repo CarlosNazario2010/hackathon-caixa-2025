@@ -1,4 +1,5 @@
 package com.carlosnazario.hackathon.services;
+
 import com.carlosnazario.hackathon.dtos.ProdutoAgregadoResponse;
 import com.carlosnazario.hackathon.dtos.SimulacaoPorDataResponse;
 import com.carlosnazario.hackathon.dtos.SimulacaoResumoResponse;
@@ -33,6 +34,7 @@ public class SimulacaoService {
     }
 
     public Simulacao realizarSimulacao(BigDecimal valorSolicitado, int numeroParcelas) {
+
         // 1. Determina o produto com base nas regras de negócio
         Produto produto = determinarProduto(valorSolicitado, numeroParcelas);
         BigDecimal taxaJuros = produto.getTaxaJuros();
@@ -44,8 +46,8 @@ public class SimulacaoService {
 
         // 3. Cria a entidade Simulacao para persistência
         Simulacao simulacao = new Simulacao();
-        simulacao.setValorDesejado(valorSolicitado); // Preenche o novo campo
-        simulacao.setPrazo(numeroParcelas); // Preenche o novo campo
+        simulacao.setValorDesejado(valorSolicitado);
+        simulacao.setPrazo(numeroParcelas);
         simulacao.setProduto(produto);
         simulacao.setResultados(resultados);
 
@@ -75,7 +77,7 @@ public class SimulacaoService {
             return Produto.PRODUTO_1;
         }
 
-        // Retorna um valor padrão ou lança uma exceção se nenhuma regra se aplicar
+        // Retorna um valor padrão se nenhuma regra se aplicar
         return Produto.PRODUTO_1;
     }
 
@@ -175,6 +177,7 @@ public class SimulacaoService {
     //##########################################################################################
 
 
+    // Retorna os valores agregados por produto em determinada data
     public SimulacaoPorDataResponse listarSimulacoesPorDataAgregadas(LocalDate data) {
         LocalDateTime dataInicio = data.atStartOfDay();
         LocalDateTime dataFim = data.atTime(LocalTime.MAX);
@@ -202,8 +205,7 @@ public class SimulacaoService {
         return new SimulacaoPorDataResponse(listaSac, listaPrice);
     }
 
-    // O método processarAgregacoes permanece o mesmo
-    // NOVO MÉTODO AUXILIAR: Processa as agregações para um tipo (SAC ou PRICE)
+    // MÉTODO AUXILIAR: Processa as agregações para um tipo (SAC ou PRICE)
     private List<ProdutoAgregadoResponse> processarAgregacoes(List<SimulacaoWrapper> simulacoesWrapper) {
         // Agrupa por produto
         Map<Produto, List<SimulacaoWrapper>> simulacoesPorProduto = simulacoesWrapper.stream()
@@ -232,7 +234,7 @@ public class SimulacaoService {
                             .map(w -> w.getSimulacao().getValorDesejado())
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                    // 3. NOVO: Calcula o número total de parcelas somando o prazo de cada simulação
+                    // 3. Calcula o número total de parcelas somando o prazo de cada simulação
                     long totalDeParcelas = wrappers.stream()
                             .mapToLong(w -> w.getSimulacao().getPrazo())
                             .sum();
@@ -255,7 +257,7 @@ public class SimulacaoService {
                 .collect(Collectors.toList());
     }
 
-    // NOVO: Classe auxiliar para agrupar simulação e tipo de resultado
+    // Classe auxiliar para agrupar simulação e tipo de resultado
     private static class SimulacaoWrapper {
         private final Simulacao simulacao;
         private final Tipo tipo;

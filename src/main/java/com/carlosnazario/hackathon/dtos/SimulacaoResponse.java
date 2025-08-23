@@ -1,7 +1,6 @@
 package com.carlosnazario.hackathon.dtos;
 
 import com.carlosnazario.hackathon.models.Produto;
-import com.carlosnazario.hackathon.models.Simulacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,10 +17,9 @@ public class SimulacaoResponse {
     private LocalDateTime dataSimulacao;
     private List<ResultadoSimulacaoResponse> resultadoSimulacao;
 
-    // Construtor sem argumentos (ainda útil para frameworks como o Jackson)
-    public SimulacaoResponse() {}
+    public SimulacaoResponse() {
+    }
 
-    // Construtor CORRIGIDO com todos os argumentos
     public SimulacaoResponse(Long idSimulacao, Produto produto, BigDecimal valorDesejado, Integer prazo, LocalDateTime dataSimulacao, List<ResultadoSimulacaoResponse> resultadoSimulacao) {
         this.idSimulacao = idSimulacao;
         this.codigoProduto = produto.getCodigo();
@@ -33,8 +31,6 @@ public class SimulacaoResponse {
         this.resultadoSimulacao = resultadoSimulacao;
     }
 
-
-    // Getters e Setters (com os novos atributos)
     public Long getIdSimulacao() { return idSimulacao; }
     public void setIdSimulacao(Long idSimulacao) { this.idSimulacao = idSimulacao; }
     public int getCodigoProduto() { return codigoProduto; }
@@ -50,7 +46,6 @@ public class SimulacaoResponse {
     public List<ResultadoSimulacaoResponse> getResultadoSimulacao() { return resultadoSimulacao; }
     public void setResultadoSimulacao(List<ResultadoSimulacaoResponse> resultadoSimulacao) { this.resultadoSimulacao = resultadoSimulacao; }
 
-    // Métodos equals e hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,7 +56,6 @@ public class SimulacaoResponse {
     @Override
     public int hashCode() { return Objects.hash(idSimulacao, codigoProduto, descricaoProduto, taxaJuros, valorDesejado, prazo, resultadoSimulacao); }
 
-    // Método toString
     @Override
     public String toString() {
         return "SimulacaoResponse{" +

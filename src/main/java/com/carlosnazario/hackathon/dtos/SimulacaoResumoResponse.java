@@ -5,22 +5,19 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SimulacaoResumoResponse {
-
     private Long idSimulacao;
     private LocalDateTime dataSimulacao;
     private int codigoProduto;
     private String descricaoProduto;
     private BigDecimal taxaJuros;
-    private BigDecimal valorDesejado; // NOVO ATRIBUTO
-    private Integer prazo; // NOVO ATRIBUTO
+    private BigDecimal valorDesejado;
+    private Integer prazo;
     private BigDecimal valorTotalParcelasSAC;
     private BigDecimal valorTotalParcelasPRICE;
 
-    // Construtor sem argumentos
     public SimulacaoResumoResponse() {
     }
 
-    // Construtor com todos os argumentos
     public SimulacaoResumoResponse(Long idSimulacao, int codigoProduto, String descricaoProduto, BigDecimal taxaJuros, BigDecimal valorDesejado, Integer prazo, LocalDateTime dataSimulacao, BigDecimal valorTotalParcelasSAC, BigDecimal valorTotalParcelasPRICE) {
         this.idSimulacao = idSimulacao;
         this.codigoProduto = codigoProduto;
@@ -33,10 +30,6 @@ public class SimulacaoResumoResponse {
         this.valorTotalParcelasPRICE = valorTotalParcelasPRICE;
     }
 
-    public SimulacaoResumoResponse(Long idSimulacao, int codigo, String descricao, BigDecimal taxaJuros, BigDecimal valorTotalSAC, BigDecimal valorTotalPRICE) {
-    }
-
-    // Getters e Setters (com os novos atributos)
     public Long getIdSimulacao() { return idSimulacao; }
     public void setIdSimulacao(Long idSimulacao) { this.idSimulacao = idSimulacao; }
     public int getCodigoProduto() { return codigoProduto; }
@@ -54,7 +47,6 @@ public class SimulacaoResumoResponse {
     public BigDecimal getValorTotalParcelasPRICE() { return valorTotalParcelasPRICE; }
     public void setValorTotalParcelasPRICE(BigDecimal valorTotalParcelasPRICE) { this.valorTotalParcelasPRICE = valorTotalParcelasPRICE; }
 
-    // Métodos equals, hashCode e toString
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

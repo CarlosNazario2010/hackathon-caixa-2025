@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record SimulacaoRequest(
         @NotNull(message = "O valor desejado não pode ser nulo.")
-        @Min(value = 0, message = "O valor desejado deve ser positivo.")
+        @Min(value = 200, message = "O valor desejado deve ser maior que 200.")
         BigDecimal valorDesejado,
 
         @NotNull(message = "O prazo não pode ser nulo.")

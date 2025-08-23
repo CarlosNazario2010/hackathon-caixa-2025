@@ -147,15 +147,316 @@ Realiza uma simulação de empréstimo com base no valor desejado e no prazo.
     }
     ```
 
--   **Resposta de Erro (400 Bad Request):**
-    Ocorre se os dados de entrada forem inválidos (nulos ou fora do mínimo permitido).
+
+
+---
+### 🛠️ Endpoints da API
+
+#### `GET /api/simulacao/resumo`
+
+Retorna uma lista resumida de todas as simulações cadastradas, com os principais dados de cada uma.
+
+-   **Parâmetros da Requisição:** Este endpoint não possui parâmetros.
+
+-   **Resposta de Sucesso (200 OK):**
+    Retorna uma lista de objetos `JSON` com um resumo de cada simulação, incluindo os valores totais de prestações calculados para os sistemas SAC e PRICE.
+
+    ```json
+    [
+        {
+            "idSimulacao": 1,
+            "codigoProduto": 1,
+            "descricaoProduto": "Produto 1",
+            "taxaJuros": 0.0179,
+            "valorDesejado": 500.00,
+            "prazo": 5,
+            "valorTotalParcelasSAC": 526.85,
+            "valorTotalParcelasPRICE": 527.25
+        },
+        {
+            "idSimulacao": 2,
+            "codigoProduto": 2,
+            "descricaoProduto": "Produto 2",
+            "taxaJuros": 0.0175,
+            "valorDesejado": 15000.00,
+            "prazo": 25,
+            "valorTotalParcelasSAC": 18412.50,
+            "valorTotalParcelasPRICE": 18637.50
+        },
+        {
+            "idSimulacao": 3,
+            "codigoProduto": 3,
+            "descricaoProduto": "Produto 3",
+            "taxaJuros": 0.0182,
+            "valorDesejado": 120000.00,
+            "prazo": 60,
+            "valorTotalParcelasSAC": 186612.00,
+            "valorTotalParcelasPRICE": 198000.00
+        },
+        {
+            "idSimulacao": 4,
+            "codigoProduto": 4,
+            "descricaoProduto": "Produto 4",
+            "taxaJuros": 0.0151,
+            "valorDesejado": 1200000.00,
+            "prazo": 120,
+            "valorTotalParcelasSAC": 2296260.00,
+            "valorTotalParcelasPRICE": 2606400.00
+        },
+        {
+            "idSimulacao": 5,
+            "codigoProduto": 4,
+            "descricaoProduto": "Produto 4",
+            "taxaJuros": 0.0151,
+            "valorDesejado": 1200000.00,
+            "prazo": 120,
+            "valorTotalParcelasSAC": 2296260.00,
+            "valorTotalParcelasPRICE": 2606400.00
+        }
+    ]
+    ```
+
+---
+### 🛠️ Endpoints da API
+
+#### `GET /api/simulacao/{id}`
+
+Busca os detalhes de uma simulação específica pelo seu identificador único.
+
+-   **Parâmetros de Caminho (`Path`):**
+    * `id` (inteiro): O identificador único da simulação que se deseja buscar.
+
+-   **Resposta de Sucesso (200 OK):**
+    Retorna um objeto `JSON` com todos os detalhes da simulação encontrada, incluindo o produto, o valor desejado e os cálculos completos para os sistemas SAC e PRICE.
 
     ```json
     {
-      "timestamp": "2025-08-20T22:30:00.000+00:00",
-      "status": 400,
-      "error": "Bad Request",
-      "path": "/api/simulacao"
+        "idSimulacao": 1,
+        "codigoProduto": 1,
+        "descricaoProduto": "Produto 1",
+        "taxaJuros": 0.0179,
+        "valorDesejado": 1000.00,
+        "prazo": 10,
+        "resultadoSimulacao": [
+            {
+                "tipo": "SAC",
+                "parcelas": [
+                    {
+                        "numero": 1,
+                        "valorAmortizacao": 100.00,
+                        "valorJuros": 17.90,
+                        "valorPrestacao": 117.90
+                    },
+                    {
+                        "numero": 2,
+                        "valorAmortizacao": 100.00,
+                        "valorJuros": 16.11,
+                        "valorPrestacao": 116.11
+                    },
+                    {
+                        "numero": 3,
+                        "valorAmortizacao": 100.00,
+                        "valorJuros": 14.32,
+                        "valorPrestacao": 114.32
+                    },
+                    {
+                        "numero": 4,
+                        "valorAmortizacao": 100.00,
+                        "valorJuros": 12.53,
+                        "valorPrestacao": 112.53
+                    },
+                    {
+                        "numero": 5,
+                        "valorAmortizacao": 100.00,
+                        "valorJuros": 10.74,
+                        "valorPrestacao": 110.74
+                    },
+                    {
+                        "numero": 6,
+                        "valorAmortizacao": 100.00,
+                        "valorJuros": 8.95,
+                        "valorPrestacao": 108.95
+                    },
+                    {
+                        "numero": 7,
+                        "valorAmortizacao": 102.56,
+                        "valorJuros": 7.54,
+                        "valorPrestacao": 110.10
+                    },
+                    {
+                        "numero": 8,
+                        "valorAmortizacao": 104.39,
+                        "valorJuros": 5.71,
+                        "valorPrestacao": 110.10
+                    },
+                    {
+                        "numero": 9,
+                        "valorAmortizacao": 106.26,
+                        "valorJuros": 3.84,
+                        "valorPrestacao": 110.10
+                    },
+                    {
+                        "numero": 10,
+                        "valorAmortizacao": 108.16,
+                        "valorJuros": 1.94,
+                        "valorPrestacao": 110.10
+                    }
+                ]
+            },
+            {
+            "tipo": "PRICE",
+            "parcelas": [
+                {
+                    "numero": 1,
+                    "valorAmortizacao": 92.20,
+                    "valorJuros": 17.90,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 2,
+                    "valorAmortizacao": 93.85,
+                    "valorJuros": 16.25,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 3,
+                    "valorAmortizacao": 95.53,
+                    "valorJuros": 14.57,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 4,
+                    "valorAmortizacao": 97.24,
+                    "valorJuros": 12.86,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 5,
+                    "valorAmortizacao": 98.98,
+                    "valorJuros": 11.12,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 6,
+                    "valorAmortizacao": 100.75,
+                    "valorJuros": 9.35,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 7,
+                    "valorAmortizacao": 102.56,
+                    "valorJuros": 7.54,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 8,
+                    "valorAmortizacao": 104.39,
+                    "valorJuros": 5.71,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 9,
+                    "valorAmortizacao": 106.26,
+                    "valorJuros": 3.84,
+                    "valorPrestacao": 110.10
+                },
+                {
+                    "numero": 10,
+                    "valorAmortizacao": 108.16,
+                    "valorJuros": 1.94,
+                    "valorPrestacao": 110.10
+                }
+            ]
+        }
+    ]
+}
+
+---
+### 🛠️ Endpoints da API
+
+#### `GET /api/simulacao/agregada?data={data}`
+
+Retorna um resumo agregado das simulações de um dia específico, com dados agrupados por tipo (SAC e PRICE) e por produto.
+
+-   **Parâmetros da Requisição (`Query Parameter`):**
+    * `data` (string no formato `AAAA-MM-DD`): A data das simulações que se deseja agregar.
+
+-   **Exemplo de Chamada:**
+    `http://localhost:8080/api/simulacao/agregada?data=2025-08-22`
+
+-   **Resposta de Sucesso (200 OK):**
+    Retorna um objeto `JSON` contendo duas listas, `listaSac` e `listaPrice`. Cada lista contém dados agregados para cada produto simulado no dia, com informações como valor médio das prestações e o total solicitado.
+
+    ```json
+    {
+        "listaSac": [
+            {
+                "codigo": 4,
+                "descricao": "Produto 4",
+                "taxaMediaDeJuros": 0.0151,
+                "valorMedioDasPrestacoes": 19135.50,
+                "valorTotalDosValoresSolicitados": 1200000.00,
+                "somaDeTodasAsPrestacoes": 2296260.00
+            },
+            {
+                "codigo": 1,
+                "descricao": "Produto 1",
+                "taxaMediaDeJuros": 0.0179,
+                "valorMedioDasPrestacoes": 109.85,
+                "valorTotalDosValoresSolicitados": 1000.00,
+                "somaDeTodasAsPrestacoes": 1098.45
+            },
+            {
+                "codigo": 2,
+                "descricao": "Produto 2",
+                "taxaMediaDeJuros": 0.0175,
+                "valorMedioDasPrestacoes": 635.63,
+                "valorTotalDosValoresSolicitados": 15000.00,
+                "somaDeTodasAsPrestacoes": 19068.75
+            },
+            {
+                "codigo": 3,
+                "descricao": "Produto 3",
+                "taxaMediaDeJuros": 0.0182,
+                "valorMedioDasPrestacoes": 3474.20,
+                "valorTotalDosValoresSolicitados": 160000.00,
+                "somaDeTodasAsPrestacoes": 277936.00
+            }
+        ],
+        "listaPrice": [
+            {
+                "codigo": 4,
+                "descricao": "Produto 4",
+                "taxaMediaDeJuros": 0.0151,
+                "valorMedioDasPrestacoes": 21720.00,
+                "valorTotalDosValoresSolicitados": 1200000.00,
+                "somaDeTodasAsPrestacoes": 2606400.00
+            },
+            {
+                "codigo": 1,
+                "descricao": "Produto 1",
+                "taxaMediaDeJuros": 0.0179,
+                "valorMedioDasPrestacoes": 110.10,
+                "valorTotalDosValoresSolicitados": 1000.00,
+                "somaDeTodasAsPrestacoes": 1101.00
+            },
+            {
+                "codigo": 2,
+                "descricao": "Produto 2",
+                "taxaMediaDeJuros": 0.0175,
+                "valorMedioDasPrestacoes": 646.50,
+                "valorTotalDosValoresSolicitados": 15000.00,
+                "somaDeTodasAsPrestacoes": 19395.00
+            },
+            {
+                "codigo": 3,
+                "descricao": "Produto 3",
+                "taxaMediaDeJuros": 0.0182,
+                "valorMedioDasPrestacoes": 3808.00,
+                "valorTotalDosValoresSolicitados": 160000.00,
+                "somaDeTodasAsPrestacoes": 304640.00
+            }
+        ]
     }
     ```
 

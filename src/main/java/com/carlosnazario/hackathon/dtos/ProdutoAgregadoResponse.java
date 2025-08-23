@@ -3,7 +3,6 @@ package com.carlosnazario.hackathon.dtos;
 import java.math.BigDecimal;
 
 public class ProdutoAgregadoResponse {
-
     private int codigo;
     private String descricao;
     private BigDecimal taxaMediaDeJuros;
@@ -11,7 +10,9 @@ public class ProdutoAgregadoResponse {
     private BigDecimal valorTotalDosValoresSolicitados;
     private BigDecimal somaDeTodasAsPrestacoes;
 
-    // Construtor, Getters e Setters
+    public ProdutoAgregadoResponse() {
+    }
+
     public ProdutoAgregadoResponse(int codigo, String descricao, BigDecimal taxaMediaDeJuros, BigDecimal valorMedioDasPrestacoes, BigDecimal valorTotalDosValoresSolicitados, BigDecimal somaDeTodasAsPrestacoes) {
         this.codigo = codigo;
         this.descricao = descricao;

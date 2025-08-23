@@ -1,23 +1,18 @@
 package com.carlosnazario.hackathon.models;
 
-import jakarta.persistence.Embeddable;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Parcela implements Serializable {
-
     private int numero;
     private BigDecimal valorAmortizacao;
     private BigDecimal valorJuros;
     private BigDecimal valorPrestacao;
 
-    // Construtor sem argumentos
     public Parcela() {
     }
 
-    // Construtor com todos os argumentos
     public Parcela(int numero, BigDecimal valorAmortizacao, BigDecimal valorJuros, BigDecimal valorPrestacao) {
         this.numero = numero;
         this.valorAmortizacao = valorAmortizacao;
@@ -25,7 +20,6 @@ public class Parcela implements Serializable {
         this.valorPrestacao = valorPrestacao;
     }
 
-    // Getters e Setters
     public int getNumero() {
         return numero;
     }
@@ -58,7 +52,6 @@ public class Parcela implements Serializable {
         this.valorPrestacao = valorPrestacao;
     }
 
-    // Métodos equals e hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,7 +65,6 @@ public class Parcela implements Serializable {
         return Objects.hash(numero, valorAmortizacao, valorJuros, valorPrestacao);
     }
 
-    // Método toString
     @Override
     public String toString() {
         return "Parcela{" +

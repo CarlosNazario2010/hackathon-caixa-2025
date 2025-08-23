@@ -1,5 +1,3 @@
-// src/main/java/com/carlosnazario/hackathon/dtos/ResultadoSimulacaoResponse.java
-
 package com.carlosnazario.hackathon.dtos;
 
 import com.carlosnazario.hackathon.models.Tipo;
@@ -10,17 +8,14 @@ public class ResultadoSimulacaoResponse {
     private Tipo tipo;
     private List<ParcelaResponse> parcelas;
 
-    // Construtor sem argumentos
     public ResultadoSimulacaoResponse() {
     }
 
-    // Construtor com todos os argumentos
     public ResultadoSimulacaoResponse(Tipo tipo, List<ParcelaResponse> parcelas) {
         this.tipo = tipo;
         this.parcelas = parcelas;
     }
 
-    // Getters e Setters
     public Tipo getTipo() {
         return tipo;
     }
@@ -37,7 +32,6 @@ public class ResultadoSimulacaoResponse {
         this.parcelas = parcelas;
     }
 
-    // Métodos equals e hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,7 +45,6 @@ public class ResultadoSimulacaoResponse {
         return Objects.hash(tipo, parcelas);
     }
 
-    // Método toString
     @Override
     public String toString() {
         return "ResultadoSimulacaoResponse{" +
